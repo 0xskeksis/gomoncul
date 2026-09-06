@@ -1,23 +1,23 @@
-NAME	?= gomoku
+NAME		?= gomoku
 
-CC	:=	clang
-
-CFLAGS	:= -Wall -Wextra -Werror -g
+CC			?= cc
 
 SRCS_DIR	:= src
+BUILD		:= .objs
+INC_DIR		:= include
 
-SRCS	?=  main.c \
+SRCS		:= main.c \
+			   demo.c \
+			   board/board.c
 
-SRCS	:= $(addprefix $(SRCS_DIR),/$(SRCS))
+CFLAGS		:= -Wall -Wextra -Werror -I$(INC_DIR) -MMD -MP -g
 
-BUILD	:= .objs
-
-OBJS	:= $(addprefix $(BUILD)/, $(SRCS:%.c=%.o))
+SRCS		:= $(addprefix $(SRCS_DIR)/,$(SRCS))
+OBJS		:= $(addprefix $(BUILD)/,$(SRCS:%.c=%.o))
+DEPS		:= $(OBJS:%.o=%.d)
 
 MAKEFLAGS	+= --no-print-directory
-
 RM			:= rm -rf
-
 DIR_UP		= mkdir -p $(@D)
 
 ################################################################################
@@ -30,7 +30,7 @@ $(NAME): $(OBJS)
 
 $(BUILD)/%.o: %.c
 	@$(DIR_UP)
-	@printf " $(CYAN)$(BOLD)$(ITALIC)■$(RESET)  compiling	$(GRAY)$(BOLD)$(ITALIC)$^$(RESET)\n"
+	@printf " $(CYAN)$(BOLD)$(ITALIC)■$(RESET)  compiling	$(GRAY)$(BOLD)$(ITALIC)$<$(RESET)\n"
 	@$(CC) $(CFLAGS) -o $@ -c $<
 
 clean:
@@ -43,10 +43,12 @@ fclean: clean
 
 re: fclean all
 
+-include $(DEPS)
+
+.PHONY: all clean fclean re
+
 ################################################################################
 
-
-BLACK		=	\033[30m
 RED			=	\033[31m
 GREEN		=	\033[32m
 YELLOW		=	\033[33m
@@ -60,4 +62,3 @@ BOLD		=	\033[1m
 ITALIC		=	\033[3m
 
 RESET		=	\033[0m
-LINE_CLR	=	\33[2K\r
