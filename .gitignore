@@ -1,4 +1,8 @@
+# Ignore object files
 *.o
-compile_commands.json
+.objs
+
+# Ignore build artifacts
+./gomoku
 .cache
-gomoku
+compile_commands.json
