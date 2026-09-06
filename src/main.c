@@ -1,6 +1,8 @@
-	#include "stdio.h"
+#include "gomoku.h"
 
-	int
-	main(){
-		printf("djs");
-	}
+int
+main(void)
+{
+	demo_start();
+	return (0);
+}
