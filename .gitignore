@@ -3,6 +3,6 @@
 .objs
 
 # Ignore build artifacts
-./gomoku
+gomoku
 .cache
 compile_commands.json
