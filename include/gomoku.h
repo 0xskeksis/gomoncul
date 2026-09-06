@@ -154,8 +154,12 @@ static inline const Move
 
 void	demo_start(void);
 void	board_init(Board *board);
-bool	board_play(Board *board, square _square, cell c, const square *captured, int captured_count);
+bool	board_play(Board *board, square _square, cell c,
+			const square *captured, int captured_count);
 bool	board_undo(Board *board);
-uint8_t	board_captured(const Board *board, cell c);
+int		board_count_rays(const Board *board, square _square, square direction,
+			cell player, int max_steps);
+int		board_count_line(const Board *board, square _square, square axis,
+			cell player);
 
 #endif

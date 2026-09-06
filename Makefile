@@ -1,4 +1,4 @@
-NAME		?= gomoku
+NAME		?= Gomoku
 
 CC			?= cc
 
