@@ -1,8 +1,6 @@
 #include "gomoku.h"
 
 int
-main(void)
-{
+main(){
 	demo_start();
-	return (0);
 }

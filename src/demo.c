@@ -74,10 +74,17 @@ print_rows(const Board *board)
 		x = 0;
 		while (x < BOARD_SIZE)
 		{
-			printf("%s ", glyph_of(board_cell(board, board_to_index(x, y))));
+			printf("%s ",
+				glyph_of(board_cell(
+					board,
+					board_to_index(x, y)
+				)));
 			x++;
 		}
-		printf(BOX_VERTICAL COLOR_LABEL " %-2d" COLOR_RESET "\n", y + 1);
+		printf(
+			BOX_VERTICAL COLOR_LABEL " %-2d" COLOR_RESET "\n",
+			y + 1
+		);
 		y++;
 	}
 }
@@ -91,13 +98,20 @@ print_board(const Board *board, cell turn)
 	print_rows(board);
 	print_frame();
 	print_header();
-	printf("\n" COLOR_INFO "  turn " COLOR_RESET "%s"
-		COLOR_INFO "    captured " COLOR_RESET "%s" COLOR_INFO " %u  "
-		COLOR_RESET "%s" COLOR_INFO " %u    moves %d\n" COLOR_RESET,
+	printf(
+		"\n"
+		COLOR_INFO "  turn " COLOR_RESET "%s"
+		COLOR_INFO "    captured " COLOR_RESET "%s"
+		COLOR_INFO " %u  " COLOR_RESET
+		"%s"
+		COLOR_INFO " %u    moves %d\n" COLOR_RESET,
 		glyph_of(turn),
-		GLYPH_BLACK, board->captured_stones[CELL_BLACK],
-		GLYPH_WHITE, board->captured_stones[CELL_WHITE],
-		board->move_count);
+		GLYPH_BLACK,
+		board->captured_stones[CELL_BLACK],
+		GLYPH_WHITE,
+		board->captured_stones[CELL_WHITE],
+		board->move_count
+	);
 }
 
 static bool
@@ -118,34 +132,74 @@ parse_coordinates(const char *line, int *x, int *y)
 	return (board_in_bounds(*x, *y));
 }
 
-static void
+static bool
 apply_input(Board *board, const char *line, cell *turn)
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
+	square	pos;
+	cell	winner;
 
 	if (line[0] == 'u' || line[0] == 'U')
 	{
 		if (board_undo(board))
 		{
-			printf(COLOR_INFO "  undo successful\n" COLOR_RESET);
+			printf(
+				COLOR_INFO
+				"  undo successful\n"
+				COLOR_RESET
+			);
 			*turn = opponent_of(*turn);
 		}
 		else
-			printf(COLOR_INFO "  nothing to undo\n" COLOR_RESET);
-		return ;
+		{
+			printf(
+				COLOR_INFO
+				"  nothing to undo\n"
+				COLOR_RESET
+			);
+		}
+		return (true);
 	}
+
 	if (!parse_coordinates(line, &x, &y))
 	{
-		printf(COLOR_INFO "  invalid input\n" COLOR_RESET);
-		return ;
+		printf(
+			COLOR_INFO
+			"  invalid input\n"
+			COLOR_RESET
+		);
+		return (true);
 	}
-	if (!board_play(board, board_to_index(x, y), *turn, NULL, 0))
+
+	pos = board_to_index(x, y);
+
+	if (!board_play(board, pos, *turn, NULL, 0))
 	{
-		printf(COLOR_INFO "  invalid move\n" COLOR_RESET);
-		return ;
+		printf(
+			COLOR_INFO
+			"  invalid move\n"
+			COLOR_RESET
+		);
+		return (true);
 	}
+
+	winner = board_winner(board);
+
+	if (winner == CELL_BLACK || winner == CELL_WHITE)
+	{
+		print_board(board, *turn);
+		printf(
+			"\n"
+			COLOR_INFO "  winner " COLOR_RESET "%s\n"
+			COLOR_RESET,
+			glyph_of(winner)
+		);
+		return (false);
+	}
+
 	*turn = opponent_of(*turn);
+	return (true);
 }
 
 void
@@ -154,20 +208,35 @@ demo_start(void)
 	Board	board;
 	cell	turn;
 	char	input[INPUT_SIZE];
+	bool	running;
 
 	board_init(&board);
 	turn = CELL_BLACK;
-	while (true)
+	running = true;
+
+	while (running)
 	{
 		print_board(&board, turn);
-		printf(COLOR_INFO "  move (e.g. J10), 'u' to undo, 'q' to quit > "
-			COLOR_RESET);
+
+		printf(
+			COLOR_INFO
+			"  move (e.g. J10), 'u' to undo, 'q' to quit > "
+			COLOR_RESET
+		);
+
 		if (!fgets(input, sizeof(input), stdin))
 			break ;
+
 		if (input[0] == 'q' || input[0] == 'Q')
 			break ;
+
 		if (input[0] != '\n')
-			apply_input(&board, input, &turn);
+			running = apply_input(
+				&board,
+				input,
+				&turn
+			);
 	}
+
 	printf("\n");
 }

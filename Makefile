@@ -8,7 +8,8 @@ INC_DIR		:= include
 
 SRCS		:= main.c \
 			   demo.c \
-			   board/board.c
+			   gomoku.c \
+			   # board/board.c
 
 CFLAGS		:= -Wall -Wextra -Werror -I$(INC_DIR) -MMD -MP -g
 
