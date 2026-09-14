@@ -9,9 +9,10 @@ INC_DIR		:= include
 SRCS		:= main.c \
 			   demo.c \
 			   gomoku.c \
+			   render.c \
 			   # board/board.c
 
-CFLAGS		:= -Wall -Wextra -Werror -I$(INC_DIR) -MMD -MP -g
+CFLAGS		:= -Wall -Wextra -Werror -I$(INC_DIR) -MMD -MP -g -lglfw -lGL -lm
 
 SRCS		:= $(addprefix $(SRCS_DIR)/,$(SRCS))
 OBJS		:= $(addprefix $(BUILD)/,$(SRCS:%.c=%.o))
