@@ -12,7 +12,8 @@ SRCS		:= main.c \
 			   render.c \
 			   # board/board.c
 
-CFLAGS		:= -Wall -Wextra -Werror -I$(INC_DIR) -MMD -MP -g -lglfw -lGL -lm
+CFLAGS		:= -Wall -Wextra -Werror -I$(INC_DIR) -MMD -MP -g
+LDLIBS		:= -lglfw -lGL -lm
 
 SRCS		:= $(addprefix $(SRCS_DIR)/,$(SRCS))
 OBJS		:= $(addprefix $(BUILD)/,$(SRCS:%.c=%.o))
@@ -27,7 +28,7 @@ DIR_UP		= mkdir -p $(@D)
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) -o $@
+	@$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDLIBS)
 	@printf " $(GREEN)$(BOLD)$(ITALIC)■$(RESET)  building	$(GREEN)$(BOLD)$(ITALIC)$(NAME)$(RESET)\n"
 
 $(BUILD)/%.o: %.c
